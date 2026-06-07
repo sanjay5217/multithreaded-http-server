@@ -7,7 +7,10 @@
 #include <unistd.h>
 #include <string>
 
-#include "socket.hpp"
+#include "server.hpp"
+
+// #include <thread> // Required for std::this_thread::sleep_for
+// #include <chrono> // Required for std::chrono::seconds
 
 // Constants
 const int PORT = 8080;
@@ -87,7 +90,7 @@ int main() {
 
         // Reply with appropriate routing
 
-        
+        // std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 
     return 0;

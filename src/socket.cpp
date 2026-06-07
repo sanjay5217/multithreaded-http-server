@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#include "socket.hpp"
+#include "server.hpp"
 
 /*
  * Constructor for Socket class

@@ -22,3 +22,15 @@ class Socket {
     bool send_message(std::string);
 };
 
+// class httpRequest {
+//     protected:
+//     string host;
+//     string path;
+//     string type;
+
+//     public:
+//     Request(string host, string path, string type);
+//     ~Request();
+//     void execute_handler(void);
+// };
+
