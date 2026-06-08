@@ -1,25 +1,11 @@
-#include <string>
-#include <iostream>
+#include "socket.hpp"
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
 
-#include "server.hpp"
-
-/*
- * Constructor for Socket class
-*/
 Socket::Socket(int socket_fd) {
     this->fd = socket_fd;
     this->buffer = "";
 }
 
-/*
- * retrieves message written to <fd> and returns it as a string
- * returns empty string if no message exists
-*/
 std::string Socket::get_message(void) {
     char temp[CONST_BUFFER_SIZE];
     std::string msg;
@@ -38,9 +24,6 @@ std::string Socket::get_message(void) {
     return "";
 }
 
-/*
- * sends message to <fd> and returns true if successful and false otherwise
-*/
 bool Socket::send_message(std::string msg) {
     ssize_t bytes_sent;
     size_t count = 0;
@@ -54,9 +37,6 @@ bool Socket::send_message(std::string msg) {
     return true;
 }
 
-/*
- * Deconstructor
-*/
 Socket::~Socket() {
     close(this->fd);
 }

@@ -1,13 +1,6 @@
-#include <iostream>
-#include <cstring>
-
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <string>
-
-#include "server.hpp"
+#include "utils.hpp"
+#include "socket.hpp"
+#include "request.hpp"
 
 // #include <thread> // Required for std::this_thread::sleep_for
 // #include <chrono> // Required for std::chrono::seconds
@@ -16,7 +9,6 @@
 const int PORT = 8080;
 
 // Functions 
-
 
 int main() {
     // Create socket
