@@ -1,6 +1,6 @@
-#include "utils.hpp"
+#include "../includes/utils.hpp"
 
-std::unordered_map extract_string(std::string msg) {
+string_dict extract_string(std::string msg) {
     string_dict map = {};
 
     size_t first_ptr = msg.find("\r\n");
@@ -20,21 +20,19 @@ std::unordered_map extract_string(std::string msg) {
     int start = first_ptr + 2;
     int end;
     std::string temp, header, content;
-    std::unordered_map<std::string, std::string> header_map;
 
-    while ((end = msg.find("\r\n", start)) != std::string::npos) {
+    while ((size_t)(end = msg.find("\r\n", start)) != std::string::npos) {
         temp = msg.substr(start, end - start);
         if (temp.empty()) break;
         int delim = temp.find(':');
         if (delim == (int)std::string::npos) { start = end + 2; continue; }
         header = temp.substr(0, delim);
         content = temp.substr(delim + 2);
-        std::transform(header.begin(), header.end(), header.begin(), [](unsigned char c) {
-            return std::tolower(c);
-        });
-        header_map[header] = content;
+        // std::transform(header.begin(), header.end(), header.begin(), [](unsigned char c) {
+        //     return std::tolower(c);
+        // });
+        map[header] = content;
         start = end + 2;
     }
-    map["headers"] = header_map;
     return map;
 };
