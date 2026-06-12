@@ -17,7 +17,6 @@ class httpResponse {
     void add_header(std::string header);
     void add_body(std::string body);
     std::string finish_res(void);
-
     ~httpResponse(void);
 
     protected:

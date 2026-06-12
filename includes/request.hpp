@@ -29,12 +29,8 @@ class httpRequest {
     std::string get_path(void) const;
     std::string get_version(void) const;
     string_dict get_header(void) const;
+    std::string get_body(void) const;
     void fill_headers(string_dict info);
     void set_body(std::string body);
-    bool extract_body(void);
-
-    /**
-     * @brief Deconstructor
-     */
-    ~httpRequest();
+    //std::string extract_body(const Socket &socket);
 };

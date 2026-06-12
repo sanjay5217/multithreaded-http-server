@@ -1,8 +1,10 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <functional>
 #include <unordered_map>
+
 #include "request.hpp"
 #include "response.hpp"
 
@@ -13,11 +15,12 @@ using function_dict = std::unordered_map<
     std::unordered_map<std::string, Handler>
 >;
 
-// FUNCTIONS
-
+// HANDLERS
+std::string invalid_handler(const httpRequest& req, int status, std::string msg);
 std::string health_handler(const httpRequest &req);
-// std::string stat_handler(Request *req);
-// std::string headers_handler(Request *req);
+std::string stat_handler(const httpRequest &req);
+std::string echo_handler(const httpRequest &req);
+std::string header_handler(const httpRequest &req);
 
 
 extern function_dict HANDLERS;
@@ -25,6 +28,7 @@ extern function_dict HANDLERS;
 class Router {
     private:
     function_dict handlers;
+    int count;
 
     public:
 

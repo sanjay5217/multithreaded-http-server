@@ -16,17 +16,24 @@ std::string httpRequest::get_version() const {return this->version;}
 
 string_dict httpRequest::get_header() const {return this->headers;}
 
+std::string httpRequest::get_body() const {return this->body;}
+
 void httpRequest::fill_headers(string_dict info) {
     for (const std::pair<const std::string, std::string>& header_pair: info) {
         this->headers[header_pair.first] = header_pair.second;
     }
 }
 
-void httpRequest::set_body(std::string body) { this->body = body; }
+void httpRequest::set_body(std::string body) {this->body = body;}
 
-bool httpRequest::extract_body() {
-    return true;
-};
+// std::string extract_body(const Socket &socket) {
+//     if (this->method != "POST") {
+//         return "";
+//     };
 
-httpRequest::~httpRequest() {
-};
+//     try { 
+//         int content_length = std::stoi(this->headers["Context-Length"]);
+//     } catch (const std::exception& e) { return ""; };
+
+//     return socket.get_message(content_length);
+// }

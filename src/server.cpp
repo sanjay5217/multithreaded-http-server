@@ -42,7 +42,7 @@ int main() {
         return 1;
     }
 
-    std::cout << "Listening on port" << PORT << " ...\n";
+    std::cout << "Listening on port " << PORT << " ...\n";
 
     // Wrap into socket class
     Socket server_socket{server_fd};
@@ -56,7 +56,7 @@ int main() {
         if ((client_fd = accept(server_fd, (sockaddr*)&client_addr, &client_len)) < 0) {
             perror("accept");
             return 1;
-        }
+        };
 
         Socket client_socket{client_fd};
         
@@ -72,14 +72,21 @@ int main() {
         std::string req_msg;
         req_msg = client_socket.get_message();
         string_dict request_map = extract_string(req_msg);
-        if (request_map.empty()) {return 1;}
+        if (request_map.empty()) { return 1; }
         httpRequest request{request_map["method"], request_map["path"], request_map["version"]};
         request.fill_headers(request_map);
+        if (request.get_method() == "POST") {
+            // EMPTY EDGE CASE BUG
+            string_dict map = request.get_header();
+            std::cout << map["Content-Length"] << std::endl;
+            int content_length = std::stoi(request.get_header()["Content-Length"]);
+            request.set_body(client_socket.get_message(content_length));
+            std::cout << request.get_body() << "hi" << std::endl;
+        };
         std::cout << req_msg << std::endl;
         httpRequest &r_req = request;
-        //server_socket.send_message(router.exec_handler(r_req));
         client_socket.send_message(router.exec_handler(r_req));
-    }
+    };
 
     return 0;
 }

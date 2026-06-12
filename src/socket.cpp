@@ -23,6 +23,7 @@ std::string Socket::get_message(void) {
             return msg;
         }
     }
+    
     return "";
 }
 
