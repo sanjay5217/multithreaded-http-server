@@ -85,7 +85,9 @@ int main() {
         };
         std::cout << req_msg << std::endl;
         httpRequest &r_req = request;
-        client_socket.send_message(router.exec_handler(r_req));
+
+        httpResponse res = router.exec_handler(r_req);
+        client_socket.send_message(res.finish_res());
     };
 
     return 0;

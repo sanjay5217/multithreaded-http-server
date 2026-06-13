@@ -25,15 +25,3 @@ void httpRequest::fill_headers(string_dict info) {
 }
 
 void httpRequest::set_body(std::string body) {this->body = body;}
-
-// std::string extract_body(const Socket &socket) {
-//     if (this->method != "POST") {
-//         return "";
-//     };
-
-//     try { 
-//         int content_length = std::stoi(this->headers["Context-Length"]);
-//     } catch (const std::exception& e) { return ""; };
-
-//     return socket.get_message(content_length);
-// }

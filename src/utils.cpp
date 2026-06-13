@@ -28,9 +28,6 @@ string_dict extract_string(std::string msg) {
         if (delim == (int)std::string::npos) { start = end + 2; continue; }
         header = temp.substr(0, delim);
         content = temp.substr(delim + 2);
-        // std::transform(header.begin(), header.end(), header.begin(), [](unsigned char c) {
-        //     return std::tolower(c);
-        // });
         map[header] = content;
         start = end + 2;
     }

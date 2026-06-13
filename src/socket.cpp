@@ -23,7 +23,7 @@ std::string Socket::get_message(void) {
             return msg;
         }
     }
-    
+
     return "";
 }
 
@@ -50,6 +50,7 @@ std::string Socket::get_message(int length) {
             this->buffer.append(temp + required, bytes_received - required);
         }
     }
+
     return msg;
 }
 
@@ -62,6 +63,7 @@ bool Socket::send_message(std::string msg) {
         if (bytes_sent < 0) { return false; }
         count += bytes_sent;
     }
+    
     return true;
 }
 

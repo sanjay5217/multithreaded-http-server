@@ -16,5 +16,3 @@ std::string httpResponse::finish_res() {
     res = this->status_line + this->headers + this->body;
     return res;
 }
-
-httpResponse::~httpResponse() {}
