@@ -19,21 +19,21 @@ extern function_dict HANDLERS;
 
 class Router {
     private:
-    function_dict handlers;
-
+        function_dict handlers;
 
     public:
+        /**
+         * @brief Constructs the router.
+         */
+        Router(void);
 
-    /**
-     * @brief Constructs the router
-     */
-    Router(void);
+        /**
+         * @brief Routes the request to the appropriate router.
+         *
+         * @param req The HTTP request to be processed.
+         * @return The HTTP response in accordance with the request.
+         */
+        httpResponse exec_handler(httpRequest &req);
 
-    /**
-     * @brief executes the handler based on request
-     *
-     * @param req: the request to be executed
-     * @return true if the handler has been executed and false otherwise
-     */
-    httpResponse exec_handler(httpRequest &req);
+        ~Router();
 };

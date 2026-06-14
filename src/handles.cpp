@@ -71,11 +71,25 @@ StaticHandler::StaticHandler() : Handler{},
     file_name{} {}
 
 httpResponse StaticHandler::handle(httpRequest &req) {
-    std::string file_name = req.get_body();
+    namespace fs = std::filesystem;
+
+    std::string file_name{req.get_body()};
+
+    std::error_code ec;
+    if (!fs::is_regular_file(file_name, ec)) {
+        return InvalidHandler{404, "Not Found"}.handle(req);
+    }
+
+    fs::path base{fs::current_path()};
+    fs::path target{fs::weakly_canonical(file_name, ec)};
+    auto [b, t]{std::mismatch(base.begin(), base.end(), target.begin())};
+    if (b != base.end()) {
+        return InvalidHandler{403, "Forbidden"}.handle(req);
+    }
 
     std::ifstream inp { file_name };
     if (!inp) {
-        return InvalidHandler{402, "Invalid File"}.handle(req);
+        return InvalidHandler{404, "Not Found"}.handle(req);
     }
     std::string final_input{
         std::istreambuf_iterator<char>(inp),

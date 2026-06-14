@@ -1,0 +1,6 @@
+HTTP/1.1 200 OK
+Content-Type: text/plain
+
+This is the body of the response.
+It spans multiple lines.
+Static file served successfully.

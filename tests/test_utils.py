@@ -40,7 +40,6 @@ class TestExtractString:
         """Parses method, path, and version from a basic GET request."""
         raw = "GET / HTTP/1.1\r\nHost: localhost\r\n\r\n"
         parsed = extract_string(raw)
-        print(parsed)
         assert parsed["method"] == "GET"
         assert parsed["path"] == "/"
         assert parsed["version"] == "HTTP/1.1"

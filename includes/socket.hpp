@@ -14,44 +14,43 @@ const int CONST_BUFFER_SIZE = 4096;
 
 class Socket {
     private:
-    int fd;
-    std::string buffer;
-    int buffer_size;
+        int fd;
+        std::string buffer;
+        size_t buffer_size;
 
     public:
+        /**
+        * @brief Constructs a socket.
+        *
+        * @param socket_fd File descriptor for the socket.
+        */
+        Socket(int socket_fd);
 
-    /**
-     * @brief Constructs a socket
-     *
-     * @param socket_fd: the file descriptor for the socket
-     */
-    Socket(int socket_fd);
+        /**
+        * @brief Reads all available data from the socket into a string.
+        *
+        * @return The received message.
+        */
+        std::string get_message();
 
-    /**
-     * @brief Parses raw bytes from the socket into a string 
-     *
-     * @return The parsed string 
-     */
-    std::string get_message(void);
+        /**
+        * @brief Reads exactly @param length bytes from the socket.
+        *
+        * @param length Number of bytes to read.
+        * @return The received message.
+        */
+        std::string get_message(int length);
 
-    /**
-     * @brief Reads exactly <length> amount of bytes into a string
-     *
-     * @param length The amount of bytes to read
-     * @return The parsed string 
-     */
-    std::string get_message(int length);
+        /**
+        * @brief Sends a message through the socket.
+        *
+        * @param msg Message to send.
+        * @return True if successful, false otherwise.
+        */
+        bool send_message(const std::string& msg);
 
-    /**
-     * @brief Writes the string message into the socket
-     *
-     * @param msg: The string message to be written
-     * @return True if the write was successful and False otherwise
-     */
-    bool send_message(std::string msg);
-
-    /**
-     * @brief Closes the socket and deconstructs it
-     */
-    ~Socket();
+        /**
+        * @brief Closes the socket fd.
+        */
+        ~Socket();
 };

@@ -31,3 +31,11 @@ httpResponse Router::exec_handler(httpRequest& req) {
     }
     return path->second->handle(req);
 };
+
+Router::~Router() {
+    for (auto& [method, paths] : this->handlers) {
+        for (auto& [path, handler] : paths) {
+            delete handler;
+        }
+    }
+}

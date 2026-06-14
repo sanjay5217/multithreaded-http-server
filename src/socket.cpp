@@ -51,7 +51,7 @@ std::string Socket::get_message(int length) {
     return msg;
 }
 
-bool Socket::send_message(std::string msg) {
+bool Socket::send_message(const std::string& msg) {
     ssize_t bytes_sent;
     size_t count = 0;
 
