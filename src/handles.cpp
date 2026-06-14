@@ -42,7 +42,17 @@ httpResponse EchoHandler::handle(httpRequest &req) {
 HeaderHandler::HeaderHandler() : Handler{} {}
 
 httpResponse HeaderHandler::handle(httpRequest &req) {
-    return Handler::handle(req);
+    httpResponse res{Handler::handle(req)};
+    string_dict headers_map{req.get_header()};
+    std::string header_body{};
+    for (const std::pair<const std::string, std::string>& header_pair: headers_map) {
+        std::stringstream ss{};
+        ss << "{ " << header_pair.first << ": " << header_pair.second << " }\n";
+        header_body += ss.str();
+    }
+    header_body.pop_back();
+    res.add_body(header_body);
+    return res;
 }
 
 ComputeHandler::ComputeHandler() : Handler{} {}
