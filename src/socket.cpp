@@ -27,7 +27,7 @@ std::string Socket::get_message(void) {
 std::string Socket::get_message(int length) {
     std::string msg;
 
-    if (this->buffer_size >= length) {
+    if (this->buffer_size >= (size_t)length) {
         msg = buffer.substr(0, length);
         buffer.erase(0, length);
         return msg;
