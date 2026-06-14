@@ -1,11 +1,8 @@
 #include "../includes/socket.hpp"
 
 
-Socket::Socket(int socket_fd) {
-    this->fd = socket_fd;
-    this->buffer = "";
-    this->buffer_size = 0;
-}
+Socket::Socket(int socket_fd) : 
+    fd{socket_fd}, buffer{}, buffer_size{0} {}
 
 std::string Socket::get_message(void) {
     char temp[CONST_BUFFER_SIZE];
@@ -63,7 +60,7 @@ bool Socket::send_message(std::string msg) {
         if (bytes_sent < 0) { return false; }
         count += bytes_sent;
     }
-    
+
     return true;
 }
 

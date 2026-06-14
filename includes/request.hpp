@@ -32,4 +32,5 @@ class httpRequest {
     std::string get_body(void) const;
     void fill_headers(string_dict info);
     void set_body(std::string body);
+    bool set_length(int length);
 };

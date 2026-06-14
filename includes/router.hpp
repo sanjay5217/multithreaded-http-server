@@ -20,7 +20,7 @@ extern function_dict HANDLERS;
 class Router {
     private:
     function_dict handlers;
-    int count;
+
 
     public:
 

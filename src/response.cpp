@@ -1,10 +1,7 @@
 #include "../includes/response.hpp"
 
-httpResponse::httpResponse() {
-    this->status_line = "";
-    this->headers = "";
-    this->body = "";
-}
+httpResponse::httpResponse() : 
+    status_line{}, body{},  headers{}{}
 
 void httpResponse::add_status(std::string status) {this->status_line += status + "\r\n";}
 void httpResponse::add_header(std::string header) {this->headers += header + "\r\n";}
