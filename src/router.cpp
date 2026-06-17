@@ -4,6 +4,7 @@
 
 function_dict HANDLERS{
     {"GET", {
+        {"/", new Handler()},
         {"/health", new HealthHandler()},
         {"/stat", new StatHandler()},
         {"/header", new HeaderHandler()}, 
