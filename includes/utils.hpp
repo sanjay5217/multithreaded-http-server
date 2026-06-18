@@ -12,6 +12,14 @@
 using string_dict = std::unordered_map<std::string, std::string>;
 
 /**
+ * @brief Handles the client message are responds back appropriately
+ *
+ * @param client_fd Client socket's fd
+ * @param router Router object reference
+ */
+//void handle_client(int client_fd, Router& router);
+
+/**
  * @brief Parses an HTTP message and extracts its attributes.
  *
  * @param msg Raw HTTP message as a string.

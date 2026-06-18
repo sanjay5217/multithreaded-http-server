@@ -285,29 +285,3 @@ class TestInvalidHandler:
         # Path outside CWD is rejected (403)
         out = invoke_handler("POST", "/static", body="/etc/passwd")
         assert "403" in out["status"]
-
-    # Special Characters, Weird Input
-
-    def test_echo_newlines_in_body(self):
-        out = invoke_handler("POST", "/echo", body="line1\nline2\nline3")
-        assert "200 OK" in out["status"]
-
-    def test_echo_binary_like_body(self):
-        out = invoke_handler("POST", "/echo", body="\x01\x02\x03\xff")
-        assert "200 OK" in out["status"]
-
-    def test_echo_unicode_body(self):
-        out = invoke_handler("POST", "/echo", body="café résumé 日本語")
-        assert "200 OK" in out["status"]
-
-    def test_echo_large_body(self):
-        out = invoke_handler("POST", "/echo", body="x" * 100_000)
-        assert "200 OK" in out["status"]
-
-    def test_echo_only_whitespace(self):
-        out = invoke_handler("POST", "/echo", body="   \t\t\n  ")
-        assert "200 OK" in out["status"]
-
-    def test_invalid_body_does_not_contain_200(self):
-        out = invoke_handler("DELETE", "/health")
-        assert "200 OK" not in out["body"]

@@ -1,6 +1,5 @@
 #include "../includes/socket.hpp"
 
-
 Socket::Socket(int socket_fd) : 
     fd{socket_fd}, buffer{}, buffer_size{0} {}
 
