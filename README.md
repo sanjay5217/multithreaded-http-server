@@ -11,7 +11,7 @@ I divided this project into 2 phases.
 
 **Phase 1 Blueprint:**
 
-![diagram](/images/http-phase1-diagram.png)
+![diagram](/images/image-1.png)
 
 Phase 1 is a single-thread server that just parses the http send by `curl localhost:PORT` and replies back. The main objective was to get the tcp socket working by being able to read and parse raw HTTP bytes and send messages back. To make this task much more complex, I decided to create 6 unique endpoints to challenge myself with the design of the server. 
 
@@ -69,6 +69,19 @@ Phase 1 is a single-thread server that just parses the http send by `curl localh
     *Note: The directory is relative to whichever server directory `./server` is run on.*
 
 
-To do this, I constructed a Router class that consisted of the method `execute_handler`. This followed the Command design pattern, where I constructed handler classes and used isomorphism to return a httpResponse depending on the path. 
+To do this, I constructed a Router class that consisted of the method `exec_handler`. This followed the Command design pattern, where I constructed handler classes and used isomorphism to return a httpResponse depending on the path. 
 
-![diagram](/images/command-dp-router.png)
+![diagram](/images/image-2.png)
+
+## Phase 2
+
+Phase 2 introduces concurrency to address two inefficiencies in the single-threaded server:
+
+1. Requests are handled sequentially right now. This means a slow or expensive request can block every client behind it.
+2. The server uses blocking I/O; `recv()` freezes the thread until bytes arrive, wasting CPU time on slow senders.
+
+**Version 1 — Thread Pool**
+
+To address the first problem, I refactored the server to use a fixed thread pool with a condition-variable-driven job queue. At startup, N worker threads are spawned and sleep on a condition variable. When the main thread accepts a client fd and pushes it onto the queue, one worker wakes up, handles the full request, and returns to sleep. Requests are now processed concurrently, so a slow request like `/compute` no longer blocks `/health`. An abstract model highlights the client-per-thread model. 
+
+![diagram](/images/image-3.png)
