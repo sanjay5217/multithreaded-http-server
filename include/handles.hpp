@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <chrono>
+#include <atomic>
 
 #include "request.hpp"
 #include "response.hpp"
@@ -10,13 +11,11 @@
 
 class Handler {
     protected:
-        static int num_req;
+        static std::atomic<int> num_req;
 
     public:
-        /**
-         * @brief Constructs the base handler.
-         */
         Handler(void);
+        virtual ~Handler() = default;
 
         /**
          * @brief Processes the request and returns a response.
@@ -25,15 +24,10 @@ class Handler {
          * @return The HTTP response.
          */
         virtual httpResponse handle(httpRequest &req);
-
-        virtual ~Handler() = default;
 };
 
 class HealthHandler : public Handler {
     public:
-        /**
-         * @brief Constructs a HealthHandler.
-         */
         HealthHandler(void);
 
         /**
@@ -47,9 +41,6 @@ class HealthHandler : public Handler {
 
 class StatHandler : public Handler {
     public:
-        /**
-         * @brief Constructs a StatHandler.
-         */
         StatHandler(void);
 
         /**
@@ -63,9 +54,6 @@ class StatHandler : public Handler {
 
 class EchoHandler : public Handler {
     public:
-        /**
-         * @brief Constructs an EchoHandler.
-         */
         EchoHandler(void);
 
         /**
@@ -79,9 +67,6 @@ class EchoHandler : public Handler {
 
 class HeaderHandler : public Handler {
     public:
-        /**
-         * @brief Constructs a HeaderHandler.
-         */
         HeaderHandler(void);
 
         /**
@@ -95,9 +80,6 @@ class HeaderHandler : public Handler {
 
 class ComputeHandler : public Handler {
     public:
-        /**
-         * @brief Constructs a ComputeHandler.
-         */
         ComputeHandler();
 
         /**
@@ -111,9 +93,6 @@ class ComputeHandler : public Handler {
 
 class StaticHandler : public Handler {
     public:
-        /**
-         * @brief Constructs a StaticHandler.
-         */
         StaticHandler();
 
         /**
@@ -124,15 +103,11 @@ class StaticHandler : public Handler {
          */
         httpResponse handle(httpRequest &req) override;
 
-        protected:
+    protected:
         std::string file_name;
 };
 
 class InvalidHandler : public Handler {
-    protected:
-        std::string status;
-        std::string msg;
-
     public:
         /**
          * @brief Constructs an error handler with a fixed status and message.
@@ -149,4 +124,8 @@ class InvalidHandler : public Handler {
          * @return The HTTP response.
          */
         httpResponse handle(httpRequest &req) override;
+
+    protected:
+        std::string status;
+        std::string msg;
 };

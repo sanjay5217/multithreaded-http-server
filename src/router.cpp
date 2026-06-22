@@ -1,6 +1,6 @@
-#include "../includes/router.hpp"
-#include "../includes/handles.hpp"
-#include "../includes/utils.hpp"
+#include "../include/router.hpp"
+#include "../include/handles.hpp"
+#include "../include/utils.hpp"
 
 function_dict HANDLERS{
     {"GET", {

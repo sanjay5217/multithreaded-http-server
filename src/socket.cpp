@@ -1,68 +1,109 @@
-#include "../includes/socket.hpp"
+#include "../include/socket.hpp"
 
-Socket::Socket(int socket_fd) : 
-    fd{socket_fd}, buffer{}, buffer_size{0} {}
+Socket::Socket(int socket_fd) :
+    fd{socket_fd}, buffer{}, buffer_size{0}, send_buffer{}, send_offset{0} {
+    fcntl(this->fd, F_SETFL, O_NONBLOCK);
+}
 
-std::string Socket::get_message(void) {
+Socket::Socket(Socket&& other) :
+    fd{other.fd}, buffer{std::move(other.buffer)}, buffer_size{other.buffer_size},
+    send_buffer{std::move(other.send_buffer)}, send_offset{other.send_offset} {
+        other.fd = -1;
+    }
+
+Socket& Socket::operator=(Socket&& other) {
+    if (this != &other) {
+        close(this->fd);
+        this->fd = other.fd;
+        this->buffer = std::move(other.buffer);
+        this->buffer_size = other.buffer_size;
+        this->send_buffer = std::move(other.send_buffer);
+        this->send_offset = other.send_offset;
+        other.fd = -1;
+    }
+    return *this;
+}
+
+message_status Socket::get_message() {
     char temp[CONST_BUFFER_SIZE];
-    std::string msg;
     ssize_t bytes_received;
 
-    while ((bytes_received = recv(this->fd, temp, sizeof(temp) - 1, 0)) > 0) {
+    while ((bytes_received = recv(this->fd, temp, sizeof(temp) - 1, 0)) >= 0) {
+        if (bytes_received == 0) {
+            return message_status::CLOSED;
+        }
+
         this->buffer.append(temp, bytes_received);
         this->buffer_size+=bytes_received;
 
         size_t pos = this->buffer.find("\r\n\r\n");
         if (pos != std::string::npos) {
-            msg = this->buffer.substr(0, pos + 4);
-            this->buffer.erase(0, pos + 4);
-            return msg;
+            return message_status::COMPLETE;
         }
     }
 
-    return "";
+    if (errno == EAGAIN) {return message_status::BLOCKED;}
+    else {return message_status::CLOSED;}
 }
 
-std::string Socket::get_message(int length) {
-    std::string msg;
+message_status Socket::get_message(int length) {
+    if (this->buffer_size >= (size_t)length) { return message_status::COMPLETE; }
 
-    if (this->buffer_size >= (size_t)length) {
-        msg = buffer.substr(0, length);
-        buffer.erase(0, length);
-        return msg;
-    }
-
-    msg = buffer;
-    buffer.clear();
     char temp[CONST_BUFFER_SIZE];
     ssize_t bytes_received;
 
-    while (msg.size() < (size_t)length &&
+    while (this->buffer_size < (size_t)length &&
                 (bytes_received = recv(this->fd, temp, sizeof(temp) - 1, 0)) > 0) {
-        size_t amount = length - msg.size();
+
+        size_t amount = length - this->buffer_size;
         size_t required = std::min(amount, (size_t)bytes_received);
-        msg.append(temp, required);
-        if ((size_t)bytes_received > required) {
-            this->buffer.append(temp + required, bytes_received - required);
-        }
+        this->buffer.append(temp, required);
+        this->buffer_size+=required;
     }
 
+    if (this->buffer_size >= (size_t)length) { return message_status::COMPLETE; }
+    if (bytes_received == 0) { return message_status::CLOSED; }
+    if (bytes_received == -1) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) { return message_status::BLOCKED; }
+        return message_status::CLOSED;
+    }
+    return message_status::CLOSED;
+}
+
+std::string Socket::extract_message(std::optional<int> length) {
+    size_t pos;
+    if (!length.has_value()) {
+        pos = this->buffer.find("\r\n\r\n");
+        pos += 4;
+    } else { pos = static_cast<size_t>(*length); }
+    std::string msg = this->buffer.substr(0, pos);
+    this->buffer.erase(0, pos);
+    this->buffer_size-=pos;
     return msg;
 }
 
-bool Socket::send_message(const std::string& msg) {
-    ssize_t bytes_sent;
-    size_t count = 0;
-
-    while (count < msg.size()) {
-        bytes_sent = send(this->fd, msg.c_str() + count, msg.size() - count, 0);
-        if (bytes_sent < 0) { return false; }
-        count += bytes_sent;
+message_status Socket::send_message(const std::string& msg) {
+    if (this->send_offset == 0 && this->send_buffer.empty()) {
+        this->send_buffer = msg;
     }
 
-    return true;
+    while (this->send_offset < this->send_buffer.size()) {
+        ssize_t bytes_sent = send(this->fd, this->send_buffer.c_str() + this->send_offset,
+                                   this->send_buffer.size() - this->send_offset, 0);
+        if (bytes_sent == 0) { return message_status::CLOSED; }
+        if (bytes_sent < 0) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK) { return message_status::BLOCKED; }
+            return message_status::CLOSED;
+        }
+        this->send_offset += bytes_sent;
+    }
+    this->send_buffer.clear();
+    this->send_offset = 0;
+    return message_status::COMPLETE;
 }
 
 Socket::~Socket() {
-    close(this->fd);
+    if (this->fd >= 0) {
+        close(this->fd);
+    }
 }

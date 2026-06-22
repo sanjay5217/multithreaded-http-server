@@ -1,4 +1,8 @@
-#include "../includes/utils.hpp"
+#include "../include/utils.hpp"
+
+namespace {
+    std::mutex cout_mtx;
+}
 
 string_dict extract_string(std::string msg) {
     string_dict map{};
@@ -9,7 +13,8 @@ string_dict extract_string(std::string msg) {
     std::string method{}, path{}, version{};
 
     if (!(stream >> method >> path >> version)) {
-        std::cout << "Invalid Request..." << std::endl; 
+        std::lock_guard<std::mutex> lock(cout_mtx);
+        std::cout << "Invalid Request..." << std::endl;
         return map;
     };
 
@@ -46,4 +51,17 @@ int random_int(int a, int b) {
     static std::mt19937 gen{rd()};
     std::uniform_int_distribution<int> dist{a, b - 1};
     return dist(gen);
+}
+
+std::string get_header_ci(const string_dict& headers, const std::string& key) {
+    auto ci_equal = [](const std::string& a, const std::string& b) {
+        return a.size() == b.size() && std::equal(a.begin(), a.end(), b.begin(),
+            [](char x, char y) { return std::tolower((unsigned char)x) == std::tolower((unsigned char)y); });
+    };
+    for (const auto& [name, value] : headers) {
+        if (ci_equal(name, key)) {
+            return value;
+        }
+    }
+    return "";
 }

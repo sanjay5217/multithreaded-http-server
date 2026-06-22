@@ -35,5 +35,7 @@ class Router {
          */
         httpResponse exec_handler(httpRequest &req);
 
+        Router(const Router& other) = delete;
+        Router& operator=(const Router& other) = delete;
         ~Router();
 };

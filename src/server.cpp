@@ -1,20 +1,18 @@
-#include "../includes/utils.hpp"
-#include "../includes/socket.hpp"
-#include "../includes/response.hpp"
-#include "../includes/request.hpp"
-#include "../includes/router.hpp"
-#include "../includes/thread-pool.hpp"
-
-// #include <thread> // Required for std::this_thread::sleep_for
-// #include <chrono> // Required for std::chrono::seconds
+#include "../include/utils.hpp"
+#include "../include/socket.hpp"
+#include "../include/response.hpp"
+#include "../include/request.hpp"
+#include "../include/router.hpp"
+#include "../include/thread-pool.hpp"
+#include <csignal>
 
 // Constants
 const int PORT = 8080;
 const int THREAD_POOL_NUMBER = 10;
 
-// Functions 
-
 int main() {
+    signal(SIGPIPE, SIG_IGN);
+
     // Create socket
     int server_fd{socket(AF_INET, SOCK_STREAM, 0)};
     if (server_fd < 0) {
@@ -55,7 +53,6 @@ int main() {
         socklen_t client_len{sizeof(client_addr)};
         int client_fd{};
         
-        // Replace with select
         if ((client_fd = accept(server_fd, (sockaddr*)&client_addr, &client_len)) < 0) {
             perror("accept");
             return 1;

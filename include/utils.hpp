@@ -8,6 +8,7 @@
 #include <cctype>
 #include <sstream>
 #include <random> 
+#include <mutex>
 
 using string_dict = std::unordered_map<std::string, std::string>;
 
@@ -44,3 +45,13 @@ int fibonacci(int n);
  * @return A random integer in the range [a, b).
  */
 int random_int(int a, int b);
+
+/**
+ * @brief Looks up a header by name, case-insensitively, without altering
+ *        how headers are stored
+ *
+ * @param headers The header map to search.
+ * @param key The header name to look up.
+ * @return The matching value, or "" if no header matches.
+ */
+std::string get_header_ci(const string_dict& headers, const std::string& key);
