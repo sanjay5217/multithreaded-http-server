@@ -95,15 +95,6 @@ class Worker {
         socket_map clients;
         std::function<void()> on_slot_freed;
         std::atomic<bool> should_stop{false};
-
-        // Bug (found via concurrent stress testing, ASan
-        // bad-__sanitizer_annotate_double_ended_contiguous_container abort
-        // inside std::deque::pop_front): client_queue used to be a plain,
-        // unsynchronized std::queue<int> pushed to from the ThreadPool's
-        // accept-loop thread and popped from this worker's own thread with
-        // no lock at all, corrupting the underlying deque under load. Fix:
-        // keep it private and guard every access with queue_mutex via
-        // enqueue_client() / the locked pop in handle_client().
         std::queue<int> client_queue;
         std::mutex queue_mutex;
 
