@@ -5,7 +5,7 @@ A multithreaded HTTP/1.1 server built from scratch in C++17, using raw POSIX soc
 I divided this project into 2 phases.
  
 - **Phase 1:** Core HTTP parsing pipeline with back-to-back single-threaded request handling, covering six custom endpoints:
-- **Phase 2:** Thread pool, shared state, graceful shutdown, CMake build system, and benchmarking with `wrk`
+- **Phase 2:** Thread pool, kqueue event loop, non-blocking I/O
 
 ## Phase 1
 
