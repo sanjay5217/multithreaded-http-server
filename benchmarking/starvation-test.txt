@@ -1,0 +1,4 @@
+wrk -t2 -c10 -d10s --latency http://localhost:8080/compute & 
+sleep 0.3
+wrk -t4 -c50 -d10s --latency http://localhost:8080/health
+wait

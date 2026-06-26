@@ -63,7 +63,7 @@ ComputeHandler::ComputeHandler() : Handler{} {}
 
 httpResponse ComputeHandler::handle(httpRequest &req) {
     httpResponse res{Handler::handle(req)};
-    int n{random_int(20, 26)};
+    int n{random_int(40, 46)};
     auto start{std::chrono::high_resolution_clock::now()};
     int result{fibonacci(n)};
     auto end{std::chrono::high_resolution_clock::now()};

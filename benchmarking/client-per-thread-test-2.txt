@@ -1,0 +1,28 @@
+Running 10s test @ http://localhost:8080/compute
+  2 threads and 10 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   776.71ms  540.88ms   2.00s    87.18%
+    Req/Sec     3.83      3.23    10.00     74.47%
+  Latency Distribution
+     50%  689.54ms
+     75%    1.17s
+     90%    1.86s
+     99%    2.00s
+  51 requests in 10.09s, 6.91KB read
+  Socket errors: connect 0, read 51, write 0, timeout 12
+Requests/sec:      5.05
+Transfer/sec:     701.24B
+Running 10s test @ http://localhost:8080/health
+  4 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    46.98ms   96.61ms 478.21ms   85.27%
+    Req/Sec    55.62     63.91   242.00     80.28%
+  Latency Distribution
+     50%    0.97ms
+     75%   21.93ms
+     90%  184.41ms
+     99%  457.92ms
+  1059 requests in 10.09s, 107.55KB read
+  Socket errors: connect 0, read 1059, write 0, timeout 0
+Requests/sec:    104.94
+Transfer/sec:     10.66KB
