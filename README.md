@@ -91,7 +91,9 @@ Phase 2 introduces concurrency to address two inefficiencies in the single-threa
 
 To address the first problem, I refactored the server to use a fixed thread pool with a condition-variable-driven job queue. At startup, N worker threads are spawned and sleep on a condition variable. When the main thread accepts a client fd and pushes it onto the queue, one worker wakes up, handles the full request, and returns to sleep. Requests are now processed concurrently, so a slow request like `/compute` no longer blocks `/health`.
 
-![diagram](/images/image-3.png)
+![diagram](/images/image4.png)
+
+This introduces an atomicity bug since the queue is a shared resource, therefore a critical section. To counter this, I used a mutex and lock to ensure mutual exclusion.
 
 **Version 2: Non-Blocking I/O and Event Loops**
 
