@@ -11,7 +11,15 @@ I divided this project into 2 phases.
 
 **Phase 1 Blueprint:**
 
-![diagram](/images/image-1.png)
+To understand the high level blueprint, we need to know how a `curl` request works.
+
+![diagram](/images/image1.png)
+
+A curl request essentially creates a client socket that uses TCP (Transportation Layer) to connect to the port number specified. It then writes to that socket the HTTP Request (Application Layer)
+
+The following is the blueprint:
+
+![diagram](/images/image2.png)
 
 Phase 1 is a single-threaded server that parses HTTP requests sent via `curl localhost:PORT` and replies back. The main objective was to get the TCP socket working by reading and parsing raw HTTP bytes and sending messages back. To make the task more challenging, I designed six unique endpoints to push the server's routing and handler design.
 
@@ -70,7 +78,7 @@ Phase 1 is a single-threaded server that parses HTTP requests sent via `curl loc
 
 To do this, I constructed a Router class with an `exec_handler` method. This followed the Command design pattern, where handler classes use polymorphism to return an `httpResponse` based on the request path.
 
-![diagram](/images/image-2.png)
+![diagram](/images/image3.png)
 
 ## Phase 2
 
