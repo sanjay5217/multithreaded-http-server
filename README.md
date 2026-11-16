@@ -99,11 +99,11 @@ This introduces an atomicity bug since the queue is a shared resource, therefore
 
 Since context switches are costly, a thread-per-client architecture is not system-efficient. I decided to explore event loops to minimize that overhead. Additionally, since `recv()` is blocking, I switched to a non-blocking architecture using `kqueue` and `kevent`, which are native to macOS. This was the most complex part of the project. It required RAII management within threads, significant refactoring of the existing architecture, and careful handling of per-client state depending on whether a client is waiting for I/O or actively being processed.
 
-![diagram](/images/image-4.png)
+![diagram](/images/image5.png)
 
 Another model I considered was a **shared executor pool** for handlers.
 
-![diagram](/images/image-5.png)
+![diagram](/images/image6.png)
 
 Essentially, handlers would also be threaded, with a separate thread pool executing them independently. The main advantage would have been full isolation between clients, so no client could stall behind another's slow request. However, I chose not to pursue this due to the added complexity in request flow. Originally, all I had to do was push the client fd to one pool and everything was handled. With this model, I would need to push the client to a pool, retrieve the request object, then push it to a second pool that handles the router execution. But this would have been unnecessary overhead for fast endpoints like `/health` and would only optimize the stalling cases with `/compute`.
 
